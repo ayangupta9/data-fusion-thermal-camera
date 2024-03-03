@@ -40,5 +40,13 @@ Enter dataset path in `config.yaml` file or download from `Kaggle`
         - Depends on the size of the image and size of the cup. 
             - Probably can do % filled
 
+## Methods thought of (Mug extraction/detection)
+- Thresholding
+    all kinds that are available
+- Contouring
+- Watershed
+- ML (pretrained models on thermal images)
+
+
 ## Deadline
 Poster session will possibly be on 22th March. We have 22 days. 1st week should be heavily focused on coding and algorithms. 

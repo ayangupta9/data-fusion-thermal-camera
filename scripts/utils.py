@@ -80,7 +80,7 @@ def create_temp_annotations(images_full_paths):
   return temp_df
 
 
-def remove_temp_spectrum(image: np.array):
+def extract_image_and_spectrum(image: np.array):
     #       spectrum     cropped image
     return image[:,:50], image[:,50:]
 

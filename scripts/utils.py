@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 import cv2
-import easyocr
+# import easyocr
 import pandas as pd
 import os
 
@@ -81,7 +81,15 @@ def create_temp_annotations(images_full_paths):
 
 
 def extract_image_and_spectrum(image: np.array):
+    """extracts image and spectrum from input numpy array
+
+    Args:
+        image (np.array): complete image including both object and spectrum
+
+    Returns:
+        spectrum (np.array), cropped_img (np.array): spectrum and cropped image returned as numpy arrays
+    """
     #       spectrum     cropped image
-    return image[:,:50], image[:,50:]
+    return image[:,:30], image[:,50:]
 
 

@@ -6,3 +6,5 @@ matplotlib
 imageio
 tqdm
 scikit-image
+scikit-learn
+pycocotools

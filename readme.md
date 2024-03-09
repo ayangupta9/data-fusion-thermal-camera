@@ -48,5 +48,25 @@ Enter dataset path in `config.yaml` file or download from `Kaggle`
 - ML (pretrained models on thermal images)
 
 
+### Steps for ROI Extraction
+We will start with adjusting the color space
+From some EDA, I have found LAB, LUV and YUV colors spaces to be useful for ROI extraction task
+
+Here's the current pipeline
+- Convert RGB image into another color space (possibly LAB)
+- Extract L channel and apply enhancement using `convertScaleAbs` function from cv2 [alpha = 2.0, beta=-50]
+- Dilate image to increase ROI area
+- Apply binary threshold on the image with threshold value of 200
+- Applying `findContours` on the thresholded image
+- Fetch each contours area and sort in descending order.
+- Pick highest contour area objects and create bounding boxes using `boundingRect`
+- These will be used as ROIs for extraction of hot liquid
+
+- Need to apply some kind of technique to identify how many objects are there in the frame. 
+    - Also, how do we know the ROI is actually a coffee mug or glass or something else.
+        Template Matching, or maybe some other technique. 
+            Some kind of edge detection
+
+
 ## Deadline
 Poster session will possibly be on 22th March. We have 22 days. 1st week should be heavily focused on coding and algorithms. 

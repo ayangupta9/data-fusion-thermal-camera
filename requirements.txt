@@ -8,3 +8,4 @@ tqdm
 scikit-image
 scikit-learn
 pycocotools
+tifffile

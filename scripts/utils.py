@@ -90,6 +90,66 @@ def extract_image_and_spectrum(image: np.array):
         spectrum (np.array), cropped_img (np.array): spectrum and cropped image returned as numpy arrays
     """
     #       spectrum     cropped image
-    return image[:,:30], image[:,50:]
+    return image[:,:29], image[:,50:]
+
+
+def get_enhanced_image(image_path, apply_ce=False, apply_blur=False, apply_clahe=False, apply_dilation=False):
+    
+    c_img = rotate_to_vertical(image_path)
+    og_img = c_img
+    c_img = cv2.cvtColor(c_img, cv2.COLOR_RGB2GRAY)
+    
+    if apply_clahe:
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(32,32))
+        c_img = clahe.apply(c_img)
+    
+    if apply_ce:
+        c_img = cv2.equalizeHist(c_img)
+    
+    if apply_blur:
+        c_img = cv2.GaussianBlur(c_img, (51, 51), 15)
+
+    cvt_img = cv2.cvtColor(og_img, cv2.COLOR_RGB2LAB)
+    # cvt_img = og_img
+    # img_dilate = None
+    
+    enhanced_img = cv2.convertScaleAbs(cvt_img[...,0], alpha=2,beta=-70)
+    if apply_dilation:
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))  # Adjust kernel size as needed
+        img_dilate = cv2.dilate(enhanced_img, kernel, iterations=2)
+    
+    return c_img, og_img, cvt_img, enhanced_img, img_dilate
+
+
+def gamma_correction(image, gamma):
+  image = image / 255.0
+  corrected = np.power(image, gamma)
+  return np.uint8(corrected * 255.0)
+
+def mixed_pipeline(img_p, apply_erode=False):
+    c_img, og_img, cvt_img, enhanced_img, img_dilate = get_enhanced_image(img_p, apply_dilation=True)
+    red_green = og_img[...,:2].mean(axis=-1)
+    red_green = cv2.GaussianBlur(red_green, (11, 11), 5)
+    gamma_rg = gamma_correction(red_green, gamma=2.0)
+    gamma_rg_int = (gamma_rg > 20).astype(np.uint8) * 255
+    
+    # blurred = cv2.GaussianBlur(enhanced_img, (11, 11), 5)
+    # blurred = cv2.GaussianBlur(gamma_rg, (11, 11), 5)
+    thresh = cv2.adaptiveThreshold(gamma_rg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV,21, 5)
+    
+    if apply_erode:
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))  # Adjust kernel size as needed
+        thresh = cv2.erode(thresh, kernel, iterations=2)
+
+    _, labels, bboxes, _ = cv2.connectedComponentsWithStats(gamma_rg_int, connectivity=8)
+
+    for box in bboxes[1:]:
+        x,y,w,h,area = box
+        if area > 5000:
+            thresh[y + h:og_img.shape[0],x-30:x+w+30] = 0
+
+    return (bboxes, thresh, og_img)
+
+
 
 

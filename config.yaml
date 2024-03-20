@@ -1,3 +1,6 @@
-dataset:
-  images: 'D:/semester 1 study/Goettingen study material/Practical Course Data Fusion/dataset/images'
+old_dataset:
+  images: 'D:/semester 1 study/Goettingen study material/Practical Course Data Fusion/dataset/Seek Thermal/old'
   videos: 'D:/semester 1 study/Goettingen study material/Practical Course Data Fusion/dataset/videos'
+new_dataset:
+  images: 'D:/semester 1 study/Goettingen study material/Practical Course Data Fusion/dataset/Seek Thermal/jpegs'
+  videos: 'D:/semester 1 study/Goettingen study material/Practical Course Data Fusion/dataset/Seek Thermal/thermal_videos'
